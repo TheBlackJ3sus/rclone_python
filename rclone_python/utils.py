@@ -13,6 +13,7 @@ from rich.progress import (
     SpinnerColumn,
     DownloadColumn,
 )
+from rich.layout import Layout
 
 # ---------------------------------------------------------------------------- #
 #                               General Functions                              #
@@ -93,6 +94,7 @@ def rclone_progress(
     pbar_title: str,
     stderr=subprocess.PIPE,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     debug=False,
 ) -> subprocess.Popen:
@@ -102,7 +104,7 @@ def rclone_progress(
     subprocesses = {}
 
     if show_progress:
-        pbar, total_progress_id = create_progress_bar(pbar_title)
+        pbar, total_progress_id = create_progress_bar(pbar_title, layout=layout)
 
     process = subprocess.Popen(
         command, stdout=subprocess.PIPE, stderr=stderr, shell=True
@@ -185,7 +187,7 @@ def extract_rclone_progress(buffer: str) -> Tuple[bool, Union[Dict[str, Any], No
         return False, None
 
 
-def create_progress_bar(pbar_title: str) -> Tuple[Progress, TaskID]:
+def create_progress_bar(pbar_title: str, layout: Layout=None) -> Tuple[Progress, TaskID]:
     pbar = Progress(
         TextColumn("[progress.description]{task.description}"),
         SpinnerColumn(),
@@ -194,7 +196,11 @@ def create_progress_bar(pbar_title: str) -> Tuple[Progress, TaskID]:
         DownloadColumn(binary_units=True),
         TimeRemainingColumn(),
     )
-    pbar.start()
+
+    if layout:
+        layout.update(pbar)
+    else:
+        pbar.start()
 
     total_progress = pbar.add_task(pbar_title, total=None)
 

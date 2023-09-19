@@ -8,6 +8,7 @@ from typing import Optional, Union, List, Dict, Callable
 from rclone_python import utils
 from rclone_python.hash_types import HashTypes
 from rclone_python.remote_types import RemoteTypes
+from rich.layout import Layout
 
 # debug flag enables/disables raw output of rclone progresses in the terminal
 DEBUG = False
@@ -125,6 +126,7 @@ def copy(
     out_path: str,
     ignore_existing=False,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -147,6 +149,7 @@ def copy(
         command="rclone copy",
         command_descr="Copying",
         show_progress=show_progress,
+        layout=layout,
         listener=listener,
         args=args,
     )
@@ -157,6 +160,7 @@ def copyto(
     out_path: str,
     ignore_existing=False,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -179,6 +183,7 @@ def copyto(
         command="rclone copyto",
         command_descr="Copying",
         show_progress=show_progress,
+        layout=layout,
         listener=listener,
         args=args,
     )
@@ -189,6 +194,7 @@ def move(
     out_path: str,
     ignore_existing=False,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -211,6 +217,7 @@ def move(
         command="rclone move",
         command_descr="Moving",
         show_progress=show_progress,
+        layout=layout,
         listener=listener,
         args=args,
     )
@@ -221,6 +228,7 @@ def moveto(
     out_path: str,
     ignore_existing=False,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -243,6 +251,7 @@ def moveto(
         command="rclone moveto",
         command_descr="Moving",
         show_progress=show_progress,
+        layout=layout,
         listener=listener,
         args=args,
     )
@@ -252,6 +261,7 @@ def sync(
     src_path: str,
     dest_path: str,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -272,6 +282,7 @@ def sync(
         command="rclone sync",
         command_descr="Syncing",
         show_progress=show_progress,
+        layout=layout,
         listener=listener,
         args=args,
     )
@@ -564,6 +575,7 @@ def _rclone_transfer_operation(
     command_descr: str,
     ignore_existing=False,
     show_progress=True,
+    layout: Layout=None,
     listener: Callable[[Dict], None] = None,
     args=None,
 ):
@@ -599,7 +611,7 @@ def _rclone_transfer_operation(
 
     # execute the upload command
     process = utils.rclone_progress(
-        command, prog_title, listener=listener, show_progress=show_progress, debug=DEBUG
+        command, prog_title, listener=listener, show_progress=show_progress, layout=layout, debug=DEBUG
     )
 
     if process.wait() == 0:
