@@ -14,6 +14,7 @@ from rich.progress import (
     DownloadColumn,
 )
 from rich.layout import Layout
+from rich.panel import Panel
 
 # ---------------------------------------------------------------------------- #
 #                               General Functions                              #
@@ -198,7 +199,8 @@ def create_progress_bar(pbar_title: str, layout: Layout=None) -> Tuple[Progress,
     )
 
     if layout:
-        layout.update(pbar)
+        rc_panel = Panel(pbar, title='[b]rclone', border_style='blue', title_align="left")
+        layout.update(rc_panel)
     else:
         pbar.start()
 
